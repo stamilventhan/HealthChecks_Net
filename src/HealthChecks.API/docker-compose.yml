@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+        SA_PASSWORD: "Akila@022025"
+        ACCEPT_EULA: "Y"
+    ports:
+    - "1433:1433"
+    networks:
+      - app-network
+
+  webapi:
+    build: .
+    container_name: healthchecksapi
+    depends_on:
+      - sqlserver
+    ports:
+      - "8080:80"
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=HealthCheckDB;User Id=sa;Password=Akila@022025;"
+    networks:
+      - app-network
+networks:
+  app-network:
